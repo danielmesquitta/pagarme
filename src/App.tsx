@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useCallback } from 'react';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const openCheckout = useCallback(() => {
+    // @ts-ignore
+    let checkout = new PagarMeCheckout.Checkout({
+      encryption_key: 'ENCRYPTION_KEY',
+      success: (data: any) => {
+        alert(JSON.stringify(data));
+      },
+      error: (err: any) => {
+        alert(JSON.stringify(err));
+      },
+      close: () => {
+        alert('The modal has been closed.');
+      },
+    });
+
+    checkout.open({
+      amount: 8000, // cents
+      buttonText: 'Pagar',
+      customerData: 'true',
+      createToken: 'false',
+      paymentMethods: 'credit_card, boleto',
+    });
+  }, []);
+
+  return <button onClick={openCheckout}>Abrir o Checkout</button>;
 }
 
 export default App;
